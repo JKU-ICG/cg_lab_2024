@@ -112,6 +112,7 @@ function init(resources) {
 
   // TASK 8-1
   //set buffers for cube
+  initCubeBuffer();
 }
 
 function initQuadBuffer() {
@@ -163,8 +164,9 @@ function render(timeInMilliseconds) {
 
   var projectionMatrix = defaultProjectionMatrix;
   // TASK 6
-
+  projectionMatrix = makeOrthographicProjectionMatrix(-.5, .5, -.5, .5, 0, 10);
   // TASK 7
+  projectionMatrix = makePerspectiveProjectionMatrix(fieldOfViewInRadians, aspectRatio, 1, 10);
 
   gl.uniformMatrix4fv(projectionLocation, false, projectionMatrix);
 
@@ -175,7 +177,7 @@ function render(timeInMilliseconds) {
   renderQuad(sceneMatrix, viewMatrix);
 
   // TASK 8-2
-
+  renderRobot(sceneMatrix, viewMatrix);
   //request another render call as soon as possible
   requestAnimationFrame(render);
 
@@ -185,6 +187,10 @@ function render(timeInMilliseconds) {
 function renderQuad(sceneMatrix, viewMatrix) {
 
   //TASK 2-2 and TASK 3 and TASK 4
+
+  sceneMatrix = matrixMultiply(sceneMatrix, makeXRotationMatrix(convertDegreeToRadians(-90)));
+  sceneMatrix = matrixMultiply(sceneMatrix, makeTranslationMatrix(0, .3, -.9));
+  sceneMatrix = matrixMultiply(sceneMatrix, makeScaleMatrix(1, 1, 1));
 
   setUpModelViewMatrix(viewMatrix, sceneMatrix);
 
@@ -215,17 +221,47 @@ function renderRobot(sceneMatrix, viewMatrix) {
   gl.enableVertexAttribArray(colorLocation);
 
   // TASK 10-2
-
+  sceneMatrix = matrixMultiply(sceneMatrix, makeYRotationMatrix(convertDegreeToRadians(animatedAngle/2)));
+  sceneMatrix = matrixMultiply(sceneMatrix, makeTranslationMatrix(.5, .2, 0));
   // store current sceneMatrix in originSceneMatrix, so it can be restored
   var originSceneMatrix = sceneMatrix;
 
   // TASK 9 and 10
-
+  sceneMatrix = matrixMultiply(sceneMatrix, makeTranslationMatrix(.0, .4, .0));
+  sceneMatrix = matrixMultiply(sceneMatrix, makeScaleMatrix(.4, .33, .5));
   setUpModelViewMatrix(viewMatrix, sceneMatrix);
   // TASK 8-3
-
+  renderCube();
   // TASK 10-1
+  sceneMatrix = originSceneMatrix;
+  setUpModelViewMatrix(viewMatrix, sceneMatrix);
+  renderCube();
 
+  sceneMatrix = originSceneMatrix;
+  sceneMatrix = matrixMultiply(sceneMatrix, makeTranslationMatrix(.16, -.6, .0));
+  sceneMatrix = matrixMultiply(sceneMatrix, makeScaleMatrix(.16, 1, 1));
+  setUpModelViewMatrix(viewMatrix, sceneMatrix);
+  renderCube();
+
+  sceneMatrix = originSceneMatrix;
+  sceneMatrix = matrixMultiply(sceneMatrix, makeTranslationMatrix(-.16, -.6, .0));
+  sceneMatrix = matrixMultiply(sceneMatrix, makeScaleMatrix(.16, 1, 1));
+  setUpModelViewMatrix(viewMatrix, sceneMatrix);
+  renderCube();
+
+  sceneMatrix = originSceneMatrix;
+  sceneMatrix = matrixMultiply(sceneMatrix, makeTranslationMatrix(-.39, .14, .0));
+  sceneMatrix = matrixMultiply(sceneMatrix, makeZRotationMatrix(convertDegreeToRadians(-50)));
+  sceneMatrix = matrixMultiply(sceneMatrix, makeScaleMatrix(.16, .6, 1));
+  setUpModelViewMatrix(viewMatrix, sceneMatrix);
+  renderCube();
+
+  sceneMatrix = originSceneMatrix;
+  sceneMatrix = matrixMultiply(sceneMatrix, makeTranslationMatrix(.39, .14, .0));
+  sceneMatrix = matrixMultiply(sceneMatrix, makeZRotationMatrix(convertDegreeToRadians(50)));
+  sceneMatrix = matrixMultiply(sceneMatrix, makeScaleMatrix(.16, .6, 1));
+  setUpModelViewMatrix(viewMatrix, sceneMatrix);
+  renderCube();
 }
 
 function renderCube() {
@@ -236,6 +272,7 @@ function renderCube() {
 function calculateViewMatrix(viewMatrix) {
   //compute the camera's matrix
   // TASK 5
+  viewMatrix = lookAt(0, 3, 5, 0, 0, 0, 0, 1, 0);
   return viewMatrix;
 }
 

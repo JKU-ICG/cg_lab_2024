@@ -18,7 +18,6 @@ uniform mat4 u_projection;
 void main() {
 
   //TASK 1 and TASK 2-1
-
   gl_Position = u_projection * u_modelView
     * vec4(a_position, 1);
 
